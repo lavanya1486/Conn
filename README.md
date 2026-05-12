@@ -282,7 +282,16 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 
 ---
 
-## 📄 License
+## � Contact
+
+- **GitHub Issues**: [Report bugs or request features](https://github.com/mayo-byte07/Conn/issues)
+- **GitHub Discussions**: [Ask questions or discuss ideas](https://github.com/mayo-byte07/Conn/discussions)
+- **Email**: aethercode.society@gmail.com
+- **Twitter/X**: [@AetherCodeSoc](https://twitter.com/AetherCodeSoc)
+
+---
+
+## �📄 License
 
 MIT License © 2026 [AetherCode Society](https://github.com/mayo-byte07)
 

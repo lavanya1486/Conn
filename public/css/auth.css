@@ -251,3 +251,51 @@
     font-size: 1.35rem;
   }
 }
+
+/* ─── Password Strength Indicator ─── */
+.strength-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  transition: all 0.3s var(--ease-out);
+}
+
+.strength-bar.active {
+  background: var(--accent);
+}
+
+.strength-bar.active[data-level="1"] {
+  background: #ef4444; /* red - weak */
+}
+
+.strength-bar.active[data-level="2"] {
+  background: #f59e0b; /* orange - fair */
+}
+
+.strength-bar.active[data-level="3"] {
+  background: #eab308; /* yellow - good */
+}
+
+.strength-bar.active[data-level="4"] {
+  background: #22c55e; /* green - strong */
+}
+
+#passwordRequirements li {
+  font-size: 0.75rem;
+  padding: 2px 0;
+  transition: color 0.2s var(--ease-out);
+}
+
+#passwordRequirements li::before {
+  content: '✗ ';
+}
+
+#passwordRequirements li.valid {
+  color: #22c55e;
+}
+
+#passwordRequirements li.valid::before {
+  content: '✓ ';
+}
+

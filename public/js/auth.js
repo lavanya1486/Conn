@@ -124,6 +124,61 @@
     const form = document.getElementById('signupForm');
     if (!form) return;
 
+    // Password strength validation
+    const passwordInput = document.getElementById('signupPassword');
+    const strengthContainer = document.getElementById('passwordStrength');
+    const strengthBars = document.querySelectorAll('.strength-bar');
+    const requirements = {
+      length: document.getElementById('req-length'),
+      uppercase: document.getElementById('req-uppercase'),
+      number: document.getElementById('req-number'),
+      special: document.getElementById('req-special')
+    };
+
+    function validatePassword(password) {
+      const checks = {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        number: /[0-9]/.test(password),
+        special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+      };
+
+      // Update requirement indicators
+      Object.keys(checks).forEach(key => {
+        if (requirements[key]) {
+          if (checks[key]) {
+            requirements[key].classList.add('valid');
+          } else {
+            requirements[key].classList.remove('valid');
+          }
+        }
+      });
+
+      // Calculate strength (0-4)
+      const strength = Object.values(checks).filter(Boolean).length;
+
+      // Update strength bars
+      strengthBars.forEach((bar, index) => {
+        if (index < strength) {
+          bar.classList.add('active');
+        } else {
+          bar.classList.remove('active');
+        }
+      });
+
+      return checks;
+    }
+
+    if (passwordInput && strengthContainer) {
+      passwordInput.addEventListener('focus', () => {
+        strengthContainer.style.display = 'block';
+      });
+
+      passwordInput.addEventListener('input', () => {
+        validatePassword(passwordInput.value);
+      });
+    }
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideError();
@@ -145,8 +200,22 @@
         return;
       }
 
-      if (password.length < 6) {
-        showError('Password must be at least 6 characters.');
+      // Validate password strength
+      const passwordChecks = validatePassword(password);
+      if (!passwordChecks.length) {
+        showError('Password must be at least 8 characters long.');
+        return;
+      }
+      if (!passwordChecks.uppercase) {
+        showError('Password must contain at least one uppercase letter.');
+        return;
+      }
+      if (!passwordChecks.number) {
+        showError('Password must contain at least one number.');
+        return;
+      }
+      if (!passwordChecks.special) {
+        showError('Password must contain at least one special character.');
         return;
       }
 

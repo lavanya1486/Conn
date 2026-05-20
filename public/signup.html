@@ -56,7 +56,21 @@
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
-          <input class="form-input" type="password" id="signupPassword" placeholder="Min. 6 characters" required>
+          <input class="form-input" type="password" id="signupPassword" placeholder="Min. 8 characters" required>
+          <div id="passwordStrength" style="margin-top:8px;font-size:0.75rem;display:none;">
+            <div style="display:flex;gap:4px;margin-bottom:6px;">
+              <div class="strength-bar" data-level="1"></div>
+              <div class="strength-bar" data-level="2"></div>
+              <div class="strength-bar" data-level="3"></div>
+              <div class="strength-bar" data-level="4"></div>
+            </div>
+            <ul id="passwordRequirements" style="list-style:none;padding:0;margin:0;color:var(--text-secondary);">
+              <li id="req-length">At least 8 characters</li>
+              <li id="req-uppercase">One uppercase letter</li>
+              <li id="req-number">One number</li>
+              <li id="req-special">One special character</li>
+            </ul>
+          </div>
         </div>
         <div class="form-group">
           <label class="form-label">Confirm Password</label>

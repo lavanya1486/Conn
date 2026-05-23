@@ -614,6 +614,94 @@ app.post('/api/links', requireAuth, async (req, res) => {
   });
 });
 
+// ──────────────────── BULK OPERATIONS ROUTES (Must be before :id routes) ────────────────────
+
+// Bulk update links (enable/disable multiple links)
+app.put('/api/links/bulk-update', requireAuth, async (req, res) => {
+  const { linkIds, active } = req.body;
+  
+  if (!linkIds || !Array.isArray(linkIds) || linkIds.length === 0) {
+    return res.status(400).json({ error: 'linkIds array required' });
+  }
+
+  if (active === undefined) {
+    return res.status(400).json({ error: 'active field required' });
+  }
+
+  try {
+    // Update all specified links
+    const { error } = await supabase
+      .from('user_links')
+      .update({ active })
+      .in('id', linkIds)
+      .eq('user_id', req.auth.userId);
+
+    if (error) throw error;
+
+    res.json({ 
+      success: true, 
+      updated: linkIds.length,
+      active 
+    });
+  } catch (err) {
+    console.error('Bulk update error:', err);
+    res.status(500).json({ error: 'Failed to update links' });
+  }
+});
+
+// Bulk delete links
+app.delete('/api/links/bulk-delete', requireAuth, async (req, res) => {
+  const { linkIds } = req.body;
+  
+  if (!linkIds || !Array.isArray(linkIds) || linkIds.length === 0) {
+    return res.status(400).json({ error: 'linkIds array required' });
+  }
+
+  try {
+    // Fetch links before deletion (for undo functionality)
+    const { data: linksToDelete } = await supabase
+      .from('user_links')
+      .select('*')
+      .in('id', linkIds)
+      .eq('user_id', req.auth.userId);
+
+    // Delete the links
+    const { error } = await supabase
+      .from('user_links')
+      .delete()
+      .in('id', linkIds)
+      .eq('user_id', req.auth.userId);
+
+    if (error) throw error;
+
+    // Reorder remaining links
+    const { data: remainingLinks } = await supabase
+      .from('user_links')
+      .select('id')
+      .eq('user_id', req.auth.userId)
+      .order('display_order', { ascending: true });
+
+    if (remainingLinks) {
+      for (let i = 0; i < remainingLinks.length; i++) {
+        await supabase.from('user_links')
+          .update({ display_order: i })
+          .eq('id', remainingLinks[i].id);
+      }
+    }
+
+    res.json({ 
+      success: true, 
+      deleted: linkIds.length,
+      undoData: linksToDelete
+    });
+  } catch (err) {
+    console.error('Bulk delete error:', err);
+    res.status(500).json({ error: 'Failed to delete links' });
+  }
+});
+
+// ──────────────────── END BULK OPERATIONS ────────────────────
+
 app.put('/api/links/:id', requireAuth, async (req, res) => {
   const { data: existing } = await supabase
     .from('user_links')

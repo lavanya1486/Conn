@@ -1823,16 +1823,19 @@
 }
 
 .faq-answer {
-  max-height: 0;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s ease-in-out;
   overflow: hidden;
-  transition: max-height 0.4s var(--ease-out);
 }
 
 .faq-item.open .faq-answer {
-  max-height: 400px;
+  grid-template-rows: 1fr;
 }
 
 .faq-answer p {
+  min-height: 0;
+  margin: 0;
   padding: 0 24px 24px;
   color: var(--text-secondary);
   line-height: 1.6;
